@@ -120,6 +120,7 @@ public class MainWindow extends JFrame {
                 buttons[i][j] = new JButton();
                 buttons[i][j].setPreferredSize(new Dimension(12, 12));
                 buttons[i][j].setBorder(new LineBorder(Color.BLACK));
+                buttons[i][j].setBackground(Color.DARK_GRAY);
                 buttons[i][j].setBorderPainted(true);
                 buttons[i][j].setName(i + " " + j);
                 buttons[i][j].addActionListener(gameEngine);
