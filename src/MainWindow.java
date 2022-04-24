@@ -8,6 +8,7 @@ public class MainWindow extends JFrame {
 
     public MainWindow(int size) 
     {
+        minesCount = (size*3)/2;
         this.setSize(size*50, size*50 + 50);
         this.setTitle("Demineur");
         setLocationRelativeTo(null);
@@ -29,7 +30,7 @@ public class MainWindow extends JFrame {
         int count = 0;
         int xPoint;
         int yPoint;
-        while(count<minesCount) {
+        while(count < minesCount) {
             xPoint = rand.nextInt(size);
             yPoint = rand.nextInt(size);
             if (minedButton[xPoint][yPoint]!=-1) {
@@ -63,6 +64,13 @@ public class MainWindow extends JFrame {
     public void main(MainWindow frame, int size) {
         GameEngine gameEngine = new GameEngine(frame);
 
+        revealed = new boolean[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                revealed[i][j] = false;
+            }
+        }
+
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
@@ -75,7 +83,7 @@ public class MainWindow extends JFrame {
         JLabel flagsJLabel = new JLabel(" Mines = ");
         flagsJLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         flagsJLabel.setHorizontalAlignment(JLabel.LEFT);
-        flagsLabel = new JLabel("0");
+        flagsLabel = new JLabel("" + this.minesCount);
 
         JLabel TimerJLabel = new JLabel(" Temps :");
         timeLabel = new JLabel("0");
@@ -99,8 +107,6 @@ public class MainWindow extends JFrame {
                 buttons[i][j] = new JButton();
                 buttons[i][j].setPreferredSize(new Dimension(12, 12));
                 buttons[i][j].setBorder(new LineBorder(Color.BLACK));
-                buttons[i][j].setBackground(Color.LIGHT_GRAY);
-                buttons[i][j].setBorder(new LineBorder(Color.BLACK));
                 buttons[i][j].setBorderPainted(true);
                 buttons[i][j].setName(i + " " + j);
                 buttons[i][j].addActionListener(gameEngine);
@@ -116,12 +122,7 @@ public class MainWindow extends JFrame {
 
         // Algorithms
         setMines(size);
-        revealed = new boolean[size][size];
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                revealed[i][j] = false;
-            }
-        }
+        
 
         // setters and getters
     }
@@ -138,22 +139,35 @@ public class MainWindow extends JFrame {
             switch (minedButton[x][y]) {
                 case -1:
                     buttons[x][y].setText("X");
+                    buttons[x][y].setSelected(false);
                     buttons[x][y].setBackground(Color.RED);
-                    JOptionPane.showMessageDialog(rootPane, "Vous avez perdu !");
+                    JOptionPane.showMessageDialog(this, "Vous avez perdu !", null, JOptionPane.ERROR_MESSAGE);
+                    System.exit(0);
                     break;
                 case 0:
-                    buttons[x][y].setBackground(Color.BLUE);
+                    buttons[x][y].setSelected(false);
+                    buttons[x][y].setBackground(Color.lightGray);
+                    for (int i = -1; i <= 1; i++) {
+                        for (int j = -1; j <= 1; j++) {
+                            try {
+                                buttonClicked(x + i, y + j);
+                            }
+                            catch (Exception e3) {
+                                // Do nothing
+                            }
+                        }
+                        }
                     break;
                 default:
                     buttons[x][y].setText(Integer.toString(minedButton[x][y]));
-                    buttons[x][y].setBackground(Color.BLUE);
+                    buttons[x][y].setBackground(Color.lightGray);
                     break;
             }
         }
 
     }
-    private static int minesCount = 0;
-    private static int[][] minedButton;
+    private int minesCount = 0;
+    private int[][] minedButton;
     private boolean[][] revealed;
 
     private static JButton[][] buttons;
