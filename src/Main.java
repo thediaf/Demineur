@@ -19,15 +19,15 @@ public class Main {
 		
 		
 		switch (toughness) {
-			case 0:
+			case 1:
 				mines = 10;
 				size = 9;
 				break;
-			case 1:
+			case 2:
 				mines = 40;
 				size = 16;
 				break;
-			case 2:
+			case 3:
 				mines = 99;
 				size = 30;
 				break;
@@ -37,6 +37,6 @@ public class Main {
 		}
 		
 		Game game = new Game(size,mines);
-		game.mainWindow(game, size);
+		game.mainWindow(game);
 	}
 }

@@ -10,7 +10,8 @@ public class Game extends JFrame {
     public Game(int size, int mines) 
     {
         minesCount = mines;
-        this.setSize(size*50, size*50 + 50);
+        this.size = size;
+        this.setSize(this.size*50, this.size*50 + 50);
         this.setTitle("Demineur");
         setLocationRelativeTo(null);
         this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -21,7 +22,7 @@ public class Game extends JFrame {
     {
         Random rand = new Random();
         
-        minedButton = new int[size][size];
+        minedButton = new int[this.size][this.size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 minedButton[i][j] = 0;
@@ -32,8 +33,8 @@ public class Game extends JFrame {
         int xPoint;
         int yPoint;
         while(count < minesCount) {
-            xPoint = rand.nextInt(size);
-            yPoint = rand.nextInt(size);
+            xPoint = rand.nextInt(this.size);
+            yPoint = rand.nextInt(this.size);
             if (minedButton[xPoint][yPoint]!=-1) {
                 minedButton[xPoint][yPoint]=-1;  // -1 represents bomb
                 count++;
@@ -41,8 +42,8 @@ public class Game extends JFrame {
         }
         
         
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < this.size; i++) {
+            for (int j = 0; j < this.size; j++) {
                 if (minedButton[i][j]==-1) {
                         // On remplit les cases adjacentes aux mines avec des chiffres
                         for (int k = -1; k <= 1 ; k++) {
@@ -62,14 +63,14 @@ public class Game extends JFrame {
         }
     }
 
-    public void mainWindow(Game frame, int size) {
+    public void mainWindow(Game frame) {
         GameEngine gameEngine = new GameEngine(frame);
         MyMouseListener myMouseListener = new MyMouseListener(frame);
 
-        revealed = new boolean[size][size];
-        flagged = new boolean[size][size];
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        revealed = new boolean[this.size][this.size];
+        flagged = new boolean[this.size][this.size];
+        for (int i = 0; i < this.size; i++) {
+            for (int j = 0; j < this.size; j++) {
                 revealed[i][j] = false;
                 flagged[i][j] = false;
             }
@@ -107,18 +108,18 @@ public class Game extends JFrame {
     
         recordPanel.add(flagsJLabel);
         recordPanel.add(flagsLabel);
-        recordPanel.add(Box.createRigidArea(new Dimension((size-1)*15 - 80,50)));
+        recordPanel.add(Box.createRigidArea(new Dimension((this.size-1)*15 - 80,50)));
         recordPanel.add(TimerJLabel);
         recordPanel.add(timeLabel);
 
 
-        GridLayout gameGridLayout = new GridLayout(size, size);
+        GridLayout gameGridLayout = new GridLayout(this.size, this.size);
         gamePanel.setLayout(gameGridLayout);
 
-        buttons = new JButton[size][size];
+        buttons = new JButton[this.size][this.size];
 
-        for (int i=0; i<size; i++) {
-            for (int j=0; j<size ; j++ ) {
+        for (int i=0; i<this.size; i++) {
+            for (int j=0; j<this.size ; j++ ) {
                 buttons[i][j] = new JButton();
                 buttons[i][j].setPreferredSize(new Dimension(12, 12));
                 buttons[i][j].setBorder(new LineBorder(Color.BLACK));
@@ -138,7 +139,7 @@ public class Game extends JFrame {
         this.setVisible(true);
 
         // Algorithms
-        setMines(size);
+        setMines(this.size);
         
         timeThread timer = new timeThread(this);
         timer.start();
@@ -193,8 +194,11 @@ public class Game extends JFrame {
                     }
                     buttons[x][y].setSelected(false);
                     buttons[x][y].setBackground(Color.RED);
-                    JOptionPane.showMessageDialog(this, "Vous avez perdu !", null, JOptionPane.ERROR_MESSAGE);
-                    System.exit(0);
+                    // JOptionPane.showMessageDialog(this, "Vous avez perdu !", null, JOptionPane.ERROR_MESSAGE);
+                    // System.exit(0);
+                    defeat = true;
+                    replay = true;
+                    this.gameOver();
                     break;
                 case 0:
                     ++this.revealedCount;
@@ -202,8 +206,11 @@ public class Game extends JFrame {
                     buttons[x][y].setBackground(Color.lightGray);
                     if (gameWon()) 
                     {
-                        JOptionPane.showMessageDialog(rootPane,"Felicitations! Vous avez remporte la partie");
-                        System.exit(0);
+                        // JOptionPane.showMessageDialog(rootPane,"Felicitations! Vous avez remporte la partie");
+                        // System.exit(0);
+
+                        replay = true;
+                        this.gameOver();
                     } 
 
                     for (int i = -1; i <= 1; i++) {
@@ -223,19 +230,60 @@ public class Game extends JFrame {
                     buttons[x][y].setBackground(Color.lightGray);
                     if (gameWon()) 
                     {
-                        JOptionPane.showMessageDialog(rootPane,"Felicitations! Vous avez remporte la partie");
-                        System.exit(0);
+                        // JOptionPane.showMessageDialog(rootPane,"Felicitations! Vous avez remporte la partie");
+                        // System.exit(0);
+                        replay = true;
+                        this.gameOver();
                     }
                     break;
             }
         }
 
     }
+
+    public void gameOver()
+    {
+        if(replay){
+            replay=false;
+            Object[] choix = {"Rejouer", "Arreter"};
+            String textefin;
+            if(defeat){
+                textefin="Dommage, c'est perdu";
+            }
+            else{
+                textefin ="Felicitations, c'est gagné";
+            }
+             
+            defeat=false;
+            int boutton = JOptionPane.showOptionDialog(this, textefin, "Jeu fini", 
+                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, choix, choix[1]);
+                             
+            if(boutton == 0){   
+                Game game = new Game(this.size, minesCount);
+                setVisible(false);
+                game.mainWindow(game);
+                // Vue nouvellevue = new Vue(new GameBoard(this.tailleX, this.tailleY, this.nbMines));
+                // this.platteau=nouvellevue.platteau;
+                // this.cases=nouvellevue.cases;
+                // update(o,arg);
+
+                // nouvellevue.setVisible(true);
+            }
+            if(boutton == 1){
+                System.exit(0);
+            }           
+        }
+    }
+
+    private int size = 0;
     private int minesCount = 0;
     private int revealedCount = 0;
     private int[][] minedButton;
     private boolean[][] revealed;
     private boolean[][] flagged;
+
+    private boolean defeat = false;
+    private boolean replay = false;
 
     private Image flag;
     private Image newFlag;
