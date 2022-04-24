@@ -9,7 +9,7 @@ public class MainWindow extends JFrame {
 
     public MainWindow(int size) 
     {
-        minesCount = (size*3)/2;
+        minesCount = 1;
         this.setSize(size*50, size*50 + 50);
         this.setTitle("Demineur");
         setLocationRelativeTo(null);
@@ -150,6 +150,11 @@ public class MainWindow extends JFrame {
         this.timeLabel.setText(Integer.toString(time0) + " s");
     }
 
+    private boolean gameWon() {
+        // noOfRevealed + noOfMines must be equal to the total no. of boxes
+        return (this.revealedCount) == (Math.pow(this.minedButton.length, 2) - this.minesCount);
+    }
+
     // If a block is right clicked
     public void buttonRightClicked(int x, int y) {
         if(!revealed[x][y]) {
@@ -186,8 +191,15 @@ public class MainWindow extends JFrame {
                     System.exit(0);
                     break;
                 case 0:
+                    ++this.revealedCount;
                     buttons[x][y].setSelected(false);
                     buttons[x][y].setBackground(Color.lightGray);
+                    if (gameWon()) 
+                    {
+                        JOptionPane.showMessageDialog(rootPane,"Felicitations! Vous avez remporte la partie");
+                        System.exit(0);
+                    } 
+
                     for (int i = -1; i <= 1; i++) {
                         for (int j = -1; j <= 1; j++) {
                             try {
@@ -200,14 +212,21 @@ public class MainWindow extends JFrame {
                         }
                     break;
                 default:
+                    ++this.revealedCount;
                     buttons[x][y].setText(Integer.toString(minedButton[x][y]));
                     buttons[x][y].setBackground(Color.lightGray);
+                    if (gameWon()) 
+                    {
+                        JOptionPane.showMessageDialog(rootPane,"Felicitations! Vous avez remporte la partie");
+                        System.exit(0);
+                    }
                     break;
             }
         }
 
     }
     private int minesCount = 0;
+    private int revealedCount = 0;
     private int[][] minedButton;
     private boolean[][] revealed;
     private boolean[][] flagged;
