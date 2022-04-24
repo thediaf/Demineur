@@ -123,8 +123,8 @@ public class MainWindow extends JFrame {
         // Algorithms
         setMines(size);
         
-
-        // setters and getters
+        timeThread timer = new timeThread(this);
+        timer.start();
     }
 
     // Increase timer every second
@@ -174,30 +174,59 @@ public class MainWindow extends JFrame {
     private int[][] minedButton;
     private boolean[][] revealed;
 
-    private static JButton[][] buttons;
-    private static JPanel recordPanel;
-    private static JPanel gamePanel;
-    private static JLabel flagsLabel;
-    private static JLabel timeLabel;
+    private JButton[][] buttons;
+    private JPanel recordPanel;
+    private JPanel gamePanel;
+    private JLabel flagsLabel;
+    private JLabel timeLabel;
 
 
-    class GameEngine implements ActionListener {
-        MainWindow parent;
+} 
+
+class GameEngine implements ActionListener {
+    MainWindow parent;
+
+    GameEngine(MainWindow parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object eventSource = e.getSource();
+        JButton clickedButton = (JButton) eventSource;
     
-        GameEngine(MainWindow parent) {
-            this.parent = parent;
-        }
-    
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Object eventSource = e.getSource();
-            JButton clickedButton = (JButton) eventSource;
-        
-            String[] xy = clickedButton.getName().split(" ", 2);
-            int x = Integer.parseInt(xy[0]);
-            int y = Integer.parseInt(xy[1]);
-            parent.buttonClicked(x, y);
+        String[] xy = clickedButton.getName().split(" ", 2);
+        int x = Integer.parseInt(xy[0]);
+        int y = Integer.parseInt(xy[1]);
+        parent.buttonClicked(x, y);
 
+    }
+}
+
+class timeThread implements Runnable {
+    private Thread t;
+    private MainWindow frame;
+
+    timeThread(MainWindow frame) {
+        this.frame = frame;
+    }
+
+    public void run() {
+        while(true) {
+            try {
+                Thread.sleep(1000);
+                frame.timer();
+            }
+            catch (InterruptedException e) {
+                System.exit(0);
+            }
         }
     }
-} 
+
+    public void start() {
+        if (t==null) {
+            t = new Thread(this);
+            t.start();
+        }
+    }
+}
