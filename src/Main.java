@@ -6,15 +6,17 @@ public class Main {
 	{
 		int toughness = 1, mines = 0, size = 0;
 		
-        Object[] options = {"Débutant", "Intermédiaire", "Difficile"};
-        toughness = JOptionPane.showOptionDialog(null,
-						"Quel est votre niveau de difficulite ?", "Niveau",
-						JOptionPane.YES_NO_CANCEL_OPTION,
-						JOptionPane.QUESTION_MESSAGE,
-						null,
-						options,
-						options[0]
-					);
+		String choice;
+		String Texte = "Choisissez le mode de difficulté : \n";
+		Texte+= "1 : Mode facile \n";
+		Texte+= "2 : Mode intermediaire \n";
+		Texte+= "3 : Mode difficile";
+		do
+		{
+			choice = JOptionPane.showInputDialog(Texte);
+			toughness = Integer.parseInt(choice);
+		}while(toughness!=1 && toughness!=2 && toughness!=3);
+		
 		
 		switch (toughness) {
 			case 0:
