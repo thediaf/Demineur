@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.Random;
 
 public class MainWindow extends JFrame {
@@ -14,7 +15,8 @@ public class MainWindow extends JFrame {
 
     }
 
-    private void setMines(int size) {
+    private void setMines(int size) 
+    {
         Random rand = new Random();
         
         minedButton = new int[size][size];
@@ -59,6 +61,7 @@ public class MainWindow extends JFrame {
     }
 
     public void main(MainWindow frame, int size) {
+        GameEngine gameEngine = new GameEngine(frame);
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -97,8 +100,10 @@ public class MainWindow extends JFrame {
                 buttons[i][j].setPreferredSize(new Dimension(12, 12));
                 buttons[i][j].setBorder(new LineBorder(Color.BLACK));
                 buttons[i][j].setBackground(Color.LIGHT_GRAY);
+                buttons[i][j].setBorder(new LineBorder(Color.BLACK));
                 buttons[i][j].setBorderPainted(true);
                 buttons[i][j].setName(i + " " + j);
+                buttons[i][j].addActionListener(gameEngine);
                 // buttons[i][j].setToolTipText("It's " + Integer.toString(i) + ", " + Integer.toString(j));
                 gamePanel.add(buttons[i][j]);
             }
@@ -111,14 +116,70 @@ public class MainWindow extends JFrame {
 
         // Algorithms
         setMines(size);
+        revealed = new boolean[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                revealed[i][j] = false;
+            }
+        }
+
+        // setters and getters
+    }
+
+    public void changeSmile() {
 
     }
 
+    public void buttonClicked(int x, int y) {
+
+        if(!revealed[x][y]) {
+            revealed[x][y] = true;
+
+            switch (minedButton[x][y]) {
+                case -1:
+                    buttons[x][y].setText("X");
+                    buttons[x][y].setBackground(Color.RED);
+                    JOptionPane.showMessageDialog(rootPane, "Vous avez perdu !");
+                    break;
+                case 0:
+                    buttons[x][y].setBackground(Color.BLUE);
+                    break;
+                default:
+                    buttons[x][y].setText(Integer.toString(minedButton[x][y]));
+                    buttons[x][y].setBackground(Color.BLUE);
+                    break;
+            }
+        }
+
+    }
     private static int minesCount = 0;
     private static int[][] minedButton;
+    private boolean[][] revealed;
+
     private static JButton[][] buttons;
     private static JPanel recordPanel;
     private static JPanel gamePanel;
     private static JLabel flagsLabel;
     private static JLabel timeLabel;
+
+
+    class GameEngine implements ActionListener {
+        MainWindow parent;
+    
+        GameEngine(MainWindow parent) {
+            this.parent = parent;
+        }
+    
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Object eventSource = e.getSource();
+            JButton clickedButton = (JButton) eventSource;
+        
+            String[] xy = clickedButton.getName().split(" ", 2);
+            int x = Integer.parseInt(xy[0]);
+            int y = Integer.parseInt(xy[1]);
+            parent.buttonClicked(x, y);
+
+        }
+    }
 } 
