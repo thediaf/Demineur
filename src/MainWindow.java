@@ -73,6 +73,5 @@ public class MainWindow extends JFrame {
     private static JPanel recordPanel;
     private static JPanel gamePanel;
     private static JLabel flagsLabel;
-    private static JButton smileButton;
     private static JLabel timeLabel;
 } 
