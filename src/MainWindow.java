@@ -9,7 +9,7 @@ public class MainWindow extends JFrame {
 
     public MainWindow(int size) 
     {
-        minesCount = 1;
+        minesCount = 9;
         this.setSize(size*50, size*50 + 50);
         this.setTitle("Demineur");
         setLocationRelativeTo(null);
@@ -80,6 +80,8 @@ public class MainWindow extends JFrame {
         try {
             flag = ImageIO.read(getClass().getResource("images/flag.png"));
             newFlag = flag.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
+            mine = ImageIO.read(getClass().getResource("images/mine.png"));
+            newMine = mine.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
         }
         catch (Exception e){
         }
@@ -184,7 +186,11 @@ public class MainWindow extends JFrame {
 
             switch (minedButton[x][y]) {
                 case -1:
-                    buttons[x][y].setText("X");
+                    try {
+                        buttons[x][y].setIcon(new ImageIcon(newMine));
+                    } catch (Exception e) {
+                    
+                    }
                     buttons[x][y].setSelected(false);
                     buttons[x][y].setBackground(Color.RED);
                     JOptionPane.showMessageDialog(this, "Vous avez perdu !", null, JOptionPane.ERROR_MESSAGE);
@@ -233,6 +239,8 @@ public class MainWindow extends JFrame {
 
     private Image flag;
     private Image newFlag;
+    private Image mine;
+    private Image newMine;
 
     private JButton[][] buttons;
     private JPanel recordPanel;
