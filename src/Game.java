@@ -5,9 +5,9 @@ import java.awt.event.*;
 import java.util.Random;
 import javax.imageio.ImageIO;
 
-public class MainWindow extends JFrame {
+public class Game extends JFrame {
 
-    public MainWindow(int size) 
+    public Game(int size) 
     {
         minesCount = 9;
         this.setSize(size*50, size*50 + 50);
@@ -62,7 +62,7 @@ public class MainWindow extends JFrame {
         }
     }
 
-    public void main(MainWindow frame, int size) {
+    public void mainWindow(Game frame, int size) {
         GameEngine gameEngine = new GameEngine(frame);
         MyMouseListener myMouseListener = new MyMouseListener(frame);
 
@@ -253,9 +253,9 @@ public class MainWindow extends JFrame {
 } 
 
 class GameEngine implements ActionListener {
-    MainWindow parent;
+    Game parent;
 
-    GameEngine(MainWindow parent) {
+    GameEngine(Game parent) {
         this.parent = parent;
     }
 
@@ -273,9 +273,9 @@ class GameEngine implements ActionListener {
 }
 
 class MyMouseListener implements MouseListener {
-    MainWindow parent;
+    Game parent;
 
-    MyMouseListener(MainWindow parent) {
+    MyMouseListener(Game parent) {
         this.parent = parent;
     }
 
@@ -303,9 +303,9 @@ class MyMouseListener implements MouseListener {
 
 class timeThread implements Runnable {
     private Thread t;
-    private MainWindow frame;
+    private Game frame;
 
-    timeThread(MainWindow frame) {
+    timeThread(Game frame) {
         this.frame = frame;
     }
 
