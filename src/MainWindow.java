@@ -3,6 +3,7 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Random;
+import javax.imageio.ImageIO;
 
 public class MainWindow extends JFrame {
 
@@ -63,12 +64,24 @@ public class MainWindow extends JFrame {
 
     public void main(MainWindow frame, int size) {
         GameEngine gameEngine = new GameEngine(frame);
+        MyMouseListener myMouseListener = new MyMouseListener(frame);
 
         revealed = new boolean[size][size];
+        flagged = new boolean[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 revealed[i][j] = false;
+                flagged[i][j] = false;
             }
+        }
+
+
+        // Images
+        try {
+            flag = ImageIO.read(getClass().getResource("images/flag.png"));
+            newFlag = flag.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
+        }
+        catch (Exception e){
         }
 
         JPanel mainPanel = new JPanel();
@@ -110,6 +123,7 @@ public class MainWindow extends JFrame {
                 buttons[i][j].setBorderPainted(true);
                 buttons[i][j].setName(i + " " + j);
                 buttons[i][j].addActionListener(gameEngine);
+                buttons[i][j].addMouseListener(myMouseListener);
                 // buttons[i][j].setToolTipText("It's " + Integer.toString(i) + ", " + Integer.toString(j));
                 gamePanel.add(buttons[i][j]);
             }
@@ -133,6 +147,28 @@ public class MainWindow extends JFrame {
         int time0 = Integer.parseInt(time[0]);
         ++time0;
         this.timeLabel.setText(Integer.toString(time0) + " s");
+    }
+
+    // If a block is right clicked
+    public void buttonRightClicked(int x, int y) {
+        if(!revealed[x][y]) {
+            if (flagged[x][y]) {
+                buttons[x][y].setIcon(null);
+                flagged[x][y] = false;
+                int old = Integer.parseInt(this.flagsLabel.getText());
+                ++old;
+                this.flagsLabel.setText(""+old);
+            }
+            else {
+                if (Integer.parseInt(this.flagsLabel.getText())>0) {
+                    buttons[x][y].setIcon(new ImageIcon(newFlag));
+                    flagged[x][y] = true;
+                    int old = Integer.parseInt(this.flagsLabel.getText());
+                    --old;
+                    this.flagsLabel.setText(""+old);
+                }
+            }
+        }
     }
 
     public void buttonClicked(int x, int y) {
@@ -173,6 +209,10 @@ public class MainWindow extends JFrame {
     private int minesCount = 0;
     private int[][] minedButton;
     private boolean[][] revealed;
+    private boolean[][] flagged;
+
+    private Image flag;
+    private Image newFlag;
 
     private JButton[][] buttons;
     private JPanel recordPanel;
@@ -181,6 +221,7 @@ public class MainWindow extends JFrame {
     private JLabel timeLabel;
 
 
+    public static final int MAGIC_SIZE = 30;
 } 
 
 class GameEngine implements ActionListener {
@@ -200,6 +241,35 @@ class GameEngine implements ActionListener {
         int y = Integer.parseInt(xy[1]);
         parent.buttonClicked(x, y);
 
+    }
+}
+
+class MyMouseListener implements MouseListener {
+    MainWindow parent;
+
+    MyMouseListener(MainWindow parent) {
+        this.parent = parent;
+    }
+
+    public void mouseExited(MouseEvent arg0){
+    }
+    public void mouseEntered(MouseEvent arg0){
+    }
+    public void mousePressed(MouseEvent arg0){
+    }
+    public void mouseClicked(MouseEvent arg0){
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent arg0) {
+        if(SwingUtilities.isRightMouseButton(arg0)){
+            Object eventSource = arg0.getSource();
+            JButton clickedButton = (JButton) eventSource;
+            String[] xy = clickedButton.getName().split(" ", 2);
+            int x = Integer.parseInt(xy[0]);
+            int y = Integer.parseInt(xy[1]);
+            parent.buttonRightClicked(x, y);
+        }
     }
 }
 
