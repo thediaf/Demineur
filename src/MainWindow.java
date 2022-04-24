@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
+import java.util.Random;
 
 public class MainWindow extends JFrame {
 
@@ -11,6 +12,50 @@ public class MainWindow extends JFrame {
         setLocationRelativeTo(null);
         this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+    }
+
+    private void setMines(int size) {
+        Random rand = new Random();
+        
+        minedButton = new int[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                minedButton[i][j] = 0;
+            }
+        }
+
+        int count = 0;
+        int xPoint;
+        int yPoint;
+        while(count<minesCount) {
+            xPoint = rand.nextInt(size);
+            yPoint = rand.nextInt(size);
+            if (minedButton[xPoint][yPoint]!=-1) {
+                minedButton[xPoint][yPoint]=-1;  // -1 represents bomb
+                count++;
+            }
+        }
+        
+        
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (minedButton[i][j]==-1) {
+                        // On remplit les cases adjacentes aux mines avec des chiffres
+                        for (int k = -1; k <= 1 ; k++) {
+                            for (int l = -1; l <= 1; l++) {
+                                try {
+                                    if (minedButton[i+k][j+l]!= -1) {
+                                        minedButton[i+k][j+l] += 1;
+                                    }
+                                }
+                                catch (Exception e) {
+                                    // Do nothing
+                                }
+                            }
+                        }
+                }
+            }
+        }
     }
 
     public void main(MainWindow frame, int size) {
@@ -65,10 +110,12 @@ public class MainWindow extends JFrame {
         this.setVisible(true);
 
         // Algorithms
-        // setMines(size);
+        setMines(size);
 
     }
 
+    private static int minesCount = 0;
+    private static int[][] minedButton;
     private static JButton[][] buttons;
     private static JPanel recordPanel;
     private static JPanel gamePanel;
