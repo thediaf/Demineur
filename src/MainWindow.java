@@ -127,8 +127,12 @@ public class MainWindow extends JFrame {
         // setters and getters
     }
 
-    public void changeSmile() {
-
+    // Increase timer every second
+    public void timer() {
+        String[] time = this.timeLabel.getText().split(" ");
+        int time0 = Integer.parseInt(time[0]);
+        ++time0;
+        this.timeLabel.setText(Integer.toString(time0) + " s");
     }
 
     public void buttonClicked(int x, int y) {
