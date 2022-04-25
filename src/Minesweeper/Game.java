@@ -311,31 +311,3 @@ public class Game extends JFrame {
 
     public static final int MAGIC_SIZE = 30;
 } 
-
-class timeThread implements Runnable {
-    private Thread t;
-    private Game frame;
-
-    timeThread(Game frame) {
-        this.frame = frame;
-    }
-
-    public void run() {
-        while(true) {
-            try {
-                Thread.sleep(1000);
-                frame.timer();
-            }
-            catch (InterruptedException e) {
-                System.exit(0);
-            }
-        }
-    }
-
-    public void start() {
-        if (t==null) {
-            t = new Thread(this);
-            t.start();
-        }
-    }
-}
