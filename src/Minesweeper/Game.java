@@ -1,3 +1,5 @@
+package Minesweeper;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -79,11 +81,11 @@ public class Game extends JFrame {
 
         // Images
         try {
-            flag = ImageIO.read(getClass().getResource("images/flag.png"));
+            flag = ImageIO.read(getClass().getResource("../images/flag.png"));
             newFlag = flag.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
-            mine = ImageIO.read(getClass().getResource("images/mine.png"));
+            mine = ImageIO.read(getClass().getResource("../images/mine.png"));
             newMine = mine.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
-            timeIcon = ImageIO.read(getClass().getResource("images/time.png"));
+            timeIcon = ImageIO.read(getClass().getResource("../images/time.png"));
             newTimeIcon = timeIcon.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
         }
         catch (Exception e){
