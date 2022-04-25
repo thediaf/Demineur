@@ -83,6 +83,8 @@ public class Game extends JFrame {
             newFlag = flag.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
             mine = ImageIO.read(getClass().getResource("images/mine.png"));
             newMine = mine.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
+            timeIcon = ImageIO.read(getClass().getResource("images/time.png"));
+            newTimeIcon = timeIcon.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
         }
         catch (Exception e){
         }
@@ -96,13 +98,15 @@ public class Game extends JFrame {
         BoxLayout recordBoxLayout = new BoxLayout(recordPanel, BoxLayout.X_AXIS);
         recordPanel.setLayout(recordBoxLayout);
       
-        JLabel flagsJLabel = new JLabel(" Mines = ");
+        JLabel flagsJLabel = new JLabel();
+        flagsJLabel.setIcon(new ImageIcon(this.newMine));
         flagsJLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         flagsJLabel.setHorizontalAlignment(JLabel.LEFT);
         flagsLabel = new JLabel("" + this.minesCount);
 
-        JLabel TimerJLabel = new JLabel(" Temps :");
+        JLabel TimerJLabel = new JLabel();
         timeLabel = new JLabel("0");
+        timeLabel.setIcon(new ImageIcon(newTimeIcon));
         timeLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         timeLabel.setHorizontalAlignment(JLabel.RIGHT);
     
@@ -133,8 +137,8 @@ public class Game extends JFrame {
             }
         }
 
-        mainPanel.add(recordPanel);
         mainPanel.add(gamePanel);
+        mainPanel.add(recordPanel);
         frame.setContentPane(mainPanel);
         this.setVisible(true);
 
@@ -289,6 +293,8 @@ public class Game extends JFrame {
     private Image newFlag;
     private Image mine;
     private Image newMine;
+    private Image timeIcon;
+    private Image newTimeIcon;
 
     private JButton[][] buttons;
     private JPanel recordPanel;
