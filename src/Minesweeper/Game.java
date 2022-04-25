@@ -12,28 +12,32 @@ public class Game extends JFrame {
     {
         minesCount = mines;
         this.size = size;
+
         this.setSize(this.size*50, this.size*50 + 50);
         this.setTitle("Demineur");
         setLocationRelativeTo(null);
         this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
     }
 
+    /* 
+        Cettte fonction permet de mettre aleatoire des bombes sous des boutons.
+        Les boutons minés ont -1 valeur 
+    */
     private void setMines(int size) 
     {
         Random rand = new Random();
         
         minedButton = new int[this.size][this.size];
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        // On initialise tous les boutons a 0
+        for (int i = 0; i < size; i++) 
+            for (int j = 0; j < size; j++) 
                 minedButton[i][j] = 0;
-            }
-        }
 
         int count = 0;
         int xPoint;
         int yPoint;
-        while(count < minesCount) {
+        while(count < minesCount) 
+        {
             xPoint = rand.nextInt(this.size);
             yPoint = rand.nextInt(this.size);
             if (minedButton[xPoint][yPoint]!=-1) {
@@ -42,11 +46,13 @@ public class Game extends JFrame {
             }
         }
         
-        
         for (int i = 0; i < this.size; i++) {
             for (int j = 0; j < this.size; j++) {
                 if (minedButton[i][j]==-1) {
-                        // On remplit les cases adjacentes aux mines avec des chiffres
+                        /* 
+                            On remplit les cases adjacentes aux mines avec le nombre 
+                                de mines qui les sont adjacentes
+                        */
                         for (int k = -1; k <= 1 ; k++) {
                             for (int l = -1; l <= 1; l++) {
                                 try {
@@ -64,9 +70,11 @@ public class Game extends JFrame {
         }
     }
 
-    public void mainWindow(Game frame) {
-        GameEngine gameEngine = new GameEngine(frame);
-        RightClickListener RightClickListener = new RightClickListener(frame);
+    // La methode de la fenetre principale du jeu
+    public void mainWindow(Game game) 
+    {
+        GameEngine gameEngine = new GameEngine(game);
+        RightClickListener RightClickListener = new RightClickListener(game);
 
         revealed = new boolean[this.size][this.size];
         flagged = new boolean[this.size][this.size];
@@ -77,15 +85,13 @@ public class Game extends JFrame {
             }
         }
 
-
+        // Recharger les icones qui seront affichees sur l'interface
         this.loadImages();
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         recordPanel = new JPanel();
-        gamePanel = new JPanel();
-
         BoxLayout recordBoxLayout = new BoxLayout(recordPanel, BoxLayout.X_AXIS);
         recordPanel.setLayout(recordBoxLayout);
       
@@ -108,6 +114,7 @@ public class Game extends JFrame {
         recordPanel.add(timeLabel);
 
 
+        gamePanel = new JPanel();
         GridLayout gameGridLayout = new GridLayout(this.size, this.size);
         gamePanel.setLayout(gameGridLayout);
 
@@ -123,26 +130,25 @@ public class Game extends JFrame {
                 buttons[i][j].setName(i + " " + j);
                 buttons[i][j].addActionListener(gameEngine);
                 buttons[i][j].addMouseListener(RightClickListener);
-                // buttons[i][j].setToolTipText("It's " + Integer.toString(i) + ", " + Integer.toString(j));
                 gamePanel.add(buttons[i][j]);
             }
         }
 
         mainPanel.add(gamePanel);
         mainPanel.add(recordPanel);
-        frame.setContentPane(mainPanel);
-        this.setVisible(true);
-
-        // Algorithms
+        game.setContentPane(mainPanel);
+        
         setMines(this.size);
         
         timeThread timer = new timeThread(this);
         timer.start();
+
+        this.setVisible(true);
+
     }
 
     public void loadImages() 
     {
-        // Images
         try {
             flag = ImageIO.read(getClass().getResource("../images/flag.png"));
             newFlag = flag.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
@@ -163,8 +169,8 @@ public class Game extends JFrame {
         this.timeLabel.setText(Integer.toString(time0) + " s");
     }
 
-    private boolean gameWon() {
-        // noOfRevealed + noOfMines must be equal to the total no. of boxes
+    private boolean gameWon() 
+    {
         return (this.revealedCount) == (Math.pow(this.minedButton.length, 2) - this.minesCount);
     }
 
@@ -256,28 +262,22 @@ public class Game extends JFrame {
         if(replay){
             replay=false;
             Object[] choix = {"Rejouer", "Arreter"};
-            String textefin;
+            String message;
             if(defeat){
-                textefin="Dommage, c'est perdu";
+                message="Dommage, c'est perdu";
             }
             else{
-                textefin ="Felicitations, c'est gagné";
+                message ="Felicitations, c'est gagné";
             }
              
             defeat=false;
-            int boutton = JOptionPane.showOptionDialog(this, textefin, "Jeu fini", 
+            int boutton = JOptionPane.showOptionDialog(this, message, "Jeu fini", 
                     JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, choix, choix[1]);
                              
             if(boutton == 0){   
                 Game game = new Game(this.size, minesCount);
                 setVisible(false);
                 game.mainWindow(game);
-                // Vue nouvellevue = new Vue(new GameBoard(this.tailleX, this.tailleY, this.nbMines));
-                // this.platteau=nouvellevue.platteau;
-                // this.cases=nouvellevue.cases;
-                // update(o,arg);
-
-                // nouvellevue.setVisible(true);
             }
             if(boutton == 1){
                 System.exit(0);
@@ -307,7 +307,6 @@ public class Game extends JFrame {
     private JPanel gamePanel;
     private JLabel flagsLabel;
     private JLabel timeLabel;
-
 
     public static final int MAGIC_SIZE = 30;
 } 

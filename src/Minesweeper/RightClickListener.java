@@ -4,10 +4,10 @@ import javax.swing.*;
 import java.awt.event.*;
 
 class RightClickListener implements MouseListener {
-    Game parent;
+    Game game;
 
-    RightClickListener(Game parent) {
-        this.parent = parent;
+    RightClickListener(Game game) {
+        this.game = game;
     }
 
     public void mouseExited(MouseEvent arg0){
@@ -27,7 +27,7 @@ class RightClickListener implements MouseListener {
             String[] xy = clickedButton.getName().split(" ", 2);
             int x = Integer.parseInt(xy[0]);
             int y = Integer.parseInt(xy[1]);
-            parent.buttonRightClicked(x, y);
+            game.buttonRightClicked(x, y);
         }
     }
 }
