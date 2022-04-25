@@ -79,17 +79,7 @@ public class Game extends JFrame {
         }
 
 
-        // Images
-        try {
-            flag = ImageIO.read(getClass().getResource("../images/flag.png"));
-            newFlag = flag.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
-            mine = ImageIO.read(getClass().getResource("../images/mine.png"));
-            newMine = mine.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
-            timeIcon = ImageIO.read(getClass().getResource("../images/time.png"));
-            newTimeIcon = timeIcon.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
-        }
-        catch (Exception e){
-        }
+        this.loadImages();
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -149,6 +139,21 @@ public class Game extends JFrame {
         
         timeThread timer = new timeThread(this);
         timer.start();
+    }
+
+    public void loadImages() 
+    {
+        // Images
+        try {
+            flag = ImageIO.read(getClass().getResource("../images/flag.png"));
+            newFlag = flag.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
+            mine = ImageIO.read(getClass().getResource("../images/mine.png"));
+            newMine = mine.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
+            timeIcon = ImageIO.read(getClass().getResource("../images/time.png"));
+            newTimeIcon = timeIcon.getScaledInstance(MAGIC_SIZE, MAGIC_SIZE, java.awt.Image.SCALE_SMOOTH);
+        }
+        catch (Exception e){
+        }   
     }
 
     // Increase timer every second
