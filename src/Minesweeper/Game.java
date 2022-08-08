@@ -10,64 +10,13 @@ public class Game extends JFrame {
 
     public Game(int size, int mines) 
     {
-        minesCount = mines;
+        this.minesCount = mines;
         this.size = size;
 
         this.setSize(this.size*50, this.size*50 + 50);
         this.setTitle("Demineur");
         setLocationRelativeTo(null);
         this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-    }
-
-    /* 
-        Cettte fonction permet de mettre aleatoire des bombes sous des boutons.
-        Les boutons minés ont -1 valeur 
-    */
-    private void setMines(int size) 
-    {
-        Random rand = new Random();
-        
-        minedButton = new int[this.size][this.size];
-        // On initialise tous les boutons a 0
-        for (int i = 0; i < size; i++) 
-            for (int j = 0; j < size; j++) 
-                minedButton[i][j] = 0;
-
-        int count = 0;
-        int xPoint;
-        int yPoint;
-        while(count < minesCount) 
-        {
-            xPoint = rand.nextInt(this.size);
-            yPoint = rand.nextInt(this.size);
-            if (minedButton[xPoint][yPoint]!=-1) {
-                minedButton[xPoint][yPoint]=-1;  // -1 represents bomb
-                count++;
-            }
-        }
-        
-        for (int i = 0; i < this.size; i++) {
-            for (int j = 0; j < this.size; j++) {
-                if (minedButton[i][j]==-1) {
-                        /* 
-                            On remplit les cases adjacentes aux mines avec le nombre 
-                                de mines qui les sont adjacentes
-                        */
-                        for (int k = -1; k <= 1 ; k++) {
-                            for (int l = -1; l <= 1; l++) {
-                                try {
-                                    if (minedButton[i+k][j+l]!= -1) {
-                                        minedButton[i+k][j+l] += 1;
-                                    }
-                                }
-                                catch (Exception e) {
-                                    // Do nothing
-                                }
-                            }
-                        }
-                }
-            }
-        }
     }
 
     // La methode de la fenetre principale du jeu
@@ -145,6 +94,57 @@ public class Game extends JFrame {
 
         this.setVisible(true);
 
+    }
+
+    /* 
+        Cettte fonction permet de mettre aleatoire des bombes sous des boutons.
+        Les boutons minés ont -1 valeur 
+    */
+    private void setMines(int size) 
+    {
+        Random rand = new Random();
+        
+        minedButton = new int[this.size][this.size];
+        // On initialise tous les boutons a 0
+        for (int i = 0; i < size; i++) 
+            for (int j = 0; j < size; j++) 
+                minedButton[i][j] = 0;
+
+        int count = 0;
+        int xPoint;
+        int yPoint;
+        while(count < minesCount) 
+        {
+            xPoint = rand.nextInt(this.size);
+            yPoint = rand.nextInt(this.size);
+            if (minedButton[xPoint][yPoint]!=-1) {
+                minedButton[xPoint][yPoint]=-1;  // -1 represents bomb
+                count++;
+            }
+        }
+        
+        for (int i = 0; i < this.size; i++) {
+            for (int j = 0; j < this.size; j++) {
+                if (minedButton[i][j]==-1) {
+                        /* 
+                            On remplit les cases adjacentes aux mines avec le nombre 
+                                de mines qui les sont adjacentes
+                        */
+                        for (int k = -1; k <= 1 ; k++) {
+                            for (int l = -1; l <= 1; l++) {
+                                try {
+                                    if (minedButton[i+k][j+l]!= -1) {
+                                        minedButton[i+k][j+l] += 1;
+                                    }
+                                }
+                                catch (Exception e) {
+                                    // Do nothing
+                                }
+                            }
+                        }
+                }
+            }
+        }
     }
 
     public void loadImages() 
